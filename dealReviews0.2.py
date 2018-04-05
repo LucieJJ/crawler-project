@@ -13,9 +13,6 @@ Created on Tue Mar 27 22:37:26 2018
 """
 import json
 import string
-import re
-from time import sleep
-from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 
