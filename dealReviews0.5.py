@@ -27,34 +27,32 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem import PorterStemmer
 
 
-def delete_punctuation(address,r2):
+def delete_punctuation(r2):
     
-    List = r2
+    
     punc = string.punctuation
     
     new_list = []
 
-    for line in List: 
+    for line in r2: 
         if line not in punc:
             new_list.append(line) 
     return new_list    
 
     
-def delete_stopping_word(address,r1):
+def delete_stopping_word(r1):
     
     
     newlist = []
     stop_words = stopwords.words('english')
     for line in r1:
-        
-       
-       if line not in stop_words:
+        if line not in stop_words:
            newlist.append(line)
     return newlist      
            
     
     
-def stemming(out,comment):
+def stemming(comment):
     
     ps = PorterStemmer()
     newlist = []
@@ -66,7 +64,7 @@ def stemming(out,comment):
     
     return newlist
      
-def related_reviews(out,address,r3):
+def related_reviews(out,r3):
     
     outputdir = out
     listdir = os.listdir(outputdir)
@@ -75,8 +73,8 @@ def related_reviews(out,address,r3):
     ps = PorterStemmer()
     newW = []
     newRe = []
-    for aw in sec_words:
-        words = word_tokenize(aw)
+    for a_word in sec_words:
+        words = word_tokenize(a_word)
         for w in words:
                 newW.append(ps.stem(w))##sec_words stemming
     for line in Reviews:
@@ -86,54 +84,80 @@ def related_reviews(out,address,r3):
     
     if 'keywords.json' in listdir:  
         fr = open(pjoin(outputdir, 'keywords.json'), 'a')   
-        model=json.dumps(newRe)  
-        fr.write(model)    
+        model4=json.dumps(newRe)  
+        fr.write(model4)    
         fr.close()
     return newRe
     
 def main():
-    addressID = 'D:/项目/资料/MEDICAL/topapp_appid.json'
-    addressR = 'D:/项目/资料/MEDICAL/topapp_review.json'
-    addressTrans = 'D:/项目/newjson/test.json'
+    categories = [
+         'ART_AND_DESIGN',
+         'AUTO_AND_VEHICLES',
+         'BEAUTY',
+         'BOOKS_AND_REFERENCE',
+         'BUSINESS',
+         'COMICS',
+         'COMMUNICATION',
+         'DATING',
+         'EDUCATION',
+         'ENTERTAINMENT',
+         'EVENTS',
+         'FAMILY'
+         
+         ]
+    base_url = 'D:/项目/资料'
     outputdir = 'D:/项目/newjson'
     listdir = os.listdir(outputdir)
-    with open(addressID,'r') as f:
-       ids = json.loads(f.read())
-    with open(addressR,'r') as f:
-       values = json.loads(f.read())
-    
-    for id in ids:
-        val = values.get(id)#list 里又分dictionary
+    for cat in categories:
+        print('\nFetching data in category %s\n' % cat)
+        cat_url = os.path.join(base_url, cat)
         if 'relatedReviews.json' in listdir:  
                     fr = open(pjoin(outputdir, 'relatedReviews.json'), 'a')   
                     blank1 = json.dumps('    ')
-                    model=json.dumps(id)  
+                    model1=json.dumps(cat)  
                     blank2 = json.dumps(':     ')
                     fr.write(blank1)
-                    fr.write(model) 
+                    fr.write(model1) 
                     fr.write(blank2)
                     fr.close()
     
-        for v in val:
+        with open(os.path.join(cat_url, 'topapp_appid.json'),'r') as f:
+            ids = json.loads(f.read())
+        with open(os.path.join(cat_url, 'topapp_review.json'),'r') as f:
+            values = json.loads(f.read())
     
-            oneComment = v.get('comment')
-        
-            r1 = stemming(outputdir,oneComment)
-            r2 = delete_stopping_word(addressTrans,r1)
-            r3 = delete_punctuation(addressTrans,r2)
-            related_reviews(outputdir,addressTrans,r3)
-            v['processedwords'] = oneComment
-            issecurity = related_reviews(outputdir,addressTrans,r3)
-            if issecurity:
-            #
-                if 'relatedReviews.json' in listdir:  
+        for id in ids:
+            val = values.get(id)
+            if 'relatedReviews.json' in listdir:  
                     fr = open(pjoin(outputdir, 'relatedReviews.json'), 'a')   
-                    model=json.dumps(oneComment)  
-                    fr.write(model)    
+                    blank1 = json.dumps('    ')
+                    model2=json.dumps(id)  
+                    blank2 = json.dumps(':     ')
+                    fr.write(blank1)
+                    fr.write(model2) 
+                    fr.write(blank2)
                     fr.close()
+    
+            for v in val:
+    
+                oneComment = v.get('comment')
+        
+                after_stemming = stemming(oneComment)
+                remove_stopping = delete_stopping_word(after_stemming)
+                punc_deleted = delete_punctuation(remove_stopping)
+                related_reviews(outputdir,punc_deleted)
+                v['processedwords'] = oneComment
+                issecurity = related_reviews(outputdir,punc_deleted)
+                if issecurity:
+            
+                    if 'relatedReviews.json' in listdir:  
+                        fr = open(pjoin(outputdir, 'relatedReviews.json'), 'a')   
+                        model3=json.dumps(oneComment)  
+                        fr.write(model3)    
+                        fr.close()
                     
-        print('current app in dealing:')
-        print(id)
+            print('current app in dealing:')
+            print(id)
         
     print('done')
 

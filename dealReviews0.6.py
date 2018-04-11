@@ -102,9 +102,29 @@ def main():
          'EDUCATION',
          'ENTERTAINMENT',
          'EVENTS',
-         'FAMILY'
-         
-         ]
+         'FAMILY',
+         'FINANCE',
+         'FOOD_AND_DRINK',
+         'GAME',
+         'HEALTH_AND_FITNESS',
+         'HOUSE_AND_HOME',
+         'LIBRARIES_AND_DEMO',
+         'LIFESTYLE',
+         'MAPS_AND_NAVIGATION',
+         'MEDICAL',
+         'MUSIC_AND_AUDIO',
+         'NEWS_AND_MAGAZINES',
+         'PARENTING',
+         'PERSONALIZATION',
+         'PHOTOGRAPHY',
+         'PRODUCTIVITY',
+         'SHOPPING',
+         'SOCIAL',
+         'SPORTS',
+         'TOOLS',
+         'TRAVEL_AND_LOCAL',
+         'VIDEO_PLAYERS',
+         'WEATHER']
     base_url = 'D:/项目/资料'
     outputdir = 'D:/项目/newjson'
     listdir = os.listdir(outputdir)

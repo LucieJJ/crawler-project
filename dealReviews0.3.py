@@ -88,12 +88,14 @@ def main():
     with open(addressID,'r') as f:
        ids = json.loads(f.read())
     with open(addressR,'r') as f:
-       values = json.loads(f.read()) 
+       values = json.loads(f.read())
+    #i=0
+    #while (i<len(ids)):
     val = values.get(ids[0])#list 里又分dictionary
     list = []
     for v in val:
         list.append(v.get('comment'))
-    #print(list)
+    
        
     stemming(addressTrans,list)
     
