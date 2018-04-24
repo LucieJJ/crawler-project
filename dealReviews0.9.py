@@ -89,7 +89,7 @@ def related_reviews(out,r3):
        if line in newW:
            newRe.append(line)
     
-    dump_to_json('keywords.json',listdir,outputdir,newRe)
+    #dump_to_json('keywords.json',listdir,outputdir,newRe)
     
     return newRe
 
